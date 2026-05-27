@@ -19,7 +19,7 @@ For a complete list of our publications, please visit [Dr. Suman Chakrabarty's g
 - **Keywords:** Protein Folding, Dimensionality Reduction, Clustering, Trp-Cage
 ---
 
-### 3️⃣ [Structural Heterogeneity Defines the Allosteric Landscape and Conformational Selection Mechanism of the PDZ2 Domain)
+### 3️⃣ [Structural Heterogeneity Defines the Allosteric Landscape and Conformational Selection Mechanism of the PDZ2 Domain](PDZ2_Domain_Allostery)
 - **Status:** *Submitted*  
 - **Keywords:** PDZ2, Allostery, MSM
 ---
