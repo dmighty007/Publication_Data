@@ -1,0 +1,49 @@
+HOST: GROUP ATOMS=16-211
+LIGC: GROUP ATOMS=1-7,9
+WO: GROUP ATOMS=221-6520:3
+
+WHOLEMOLECULES ENTITY0=HOST
+FIT_TO_TEMPLATE STRIDE=1 REFERENCE=conf_template.pdb TYPE=OPTIMAL
+lig: CENTER ATOMS=LIGC
+
+v1: FIXEDATOM AT=2.0136,2.0136,2.0
+v2: FIXEDATOM AT=2.0136,2.0136,2.25
+v3: FIXEDATOM AT=2.0136,2.0136,2.5
+
+cyl: DISTANCE ATOMS=v1,lig COMPONENTS
+
+radius: MATHEVAL ARG=cyl.x,cyl.y FUNC=sqrt(x*x+y*y) PERIODIC=NO
+funnel: MATHEVAL ARG=radius,cyl.z VAR=r,z FUNC=(r+1.0*(-1.2+z))*step(-z+1.)+(r-0.2)*step(z-1.) PERIODIC=NO
+UPPER_WALLS AT=0 ARG=funnel KAPPA=2000.0 LABEL=funnelwall
+UPPER_WALLS AT=1.8 ARG=cyl.z KAPPA=4000.0 EXP=2 LABEL=upper_wall
+
+V1: COORDINATION GROUPA=v1 GROUPB=WO SWITCH={RATIONAL D_0=0.0 R_0=0.25 NN=2 MM=6} NLIST NL_CUTOFF=1.0 NL_STRIDE=5
+V2: COORDINATION GROUPA=v2 GROUPB=WO SWITCH={RATIONAL D_0=0.0 R_0=0.25 NN=2 MM=6} NLIST NL_CUTOFF=1.0 NL_STRIDE=5
+V3: COORDINATION GROUPA=v3 GROUPB=WO SWITCH={RATIONAL D_0=0.0 R_0=0.25 NN=2 MM=6} NLIST NL_CUTOFF=1.0 NL_STRIDE=5
+
+#pp: PATH TYPE=EUCLIDEAN REFERENCE=process_wet_path.pdb GPATH NOSPATH NOZPATH 
+pp: PATH TYPE=EUCLIDEAN REFERENCE=process_wet_path.pdb LAMBDA=25
+LOWER_WALLS ARG=pp.zpath AT=-0.1 KAPPA=1500
+UPPER_WALLS ARG=pp.zpath AT=0.1 KAPPA=1500
+LOWER_WALLS ARG=pp.spath AT=-1.0 KAPPA=5000
+UPPER_WALLS ARG=pp.spath AT=51.0 KAPPA=5000
+
+# --- WELL-TEMPERED METADYNAMICS ---
+METAD ...
+   LABEL=metad
+   ARG=pp.spath
+   PACE=1000                # Depositing every 1000 steps (~2 ps for a 2fs timestep)
+   HEIGHT=1.2               # Initial hill height in kJ/mol (~0.5 kBT)
+   SIGMA=0.8                # Spath width (~20-30% of the fluctuations along the path)
+   BIASFACTOR=10            # Standard exploration biasfactor for 1D CVs
+   TEMP=300                 # System Temperature
+   GRID_MIN=-5.0            # Bounds for grid initialization to speed up execution
+   GRID_MAX=55.0
+   GRID_BIN=300
+   WALKERS_MPI
+   FILE=HILLS
+...
+
+PRINT ARG=pp.*,cyl.z,V1,V2,V3,metad.bias,funnelwall.bias,upper_wall.bias FILE=COLVAR_PROCESS_META STRIDE=100
+
+
