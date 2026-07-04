@@ -23,3 +23,8 @@ For a complete list of our publications, please visit [Dr. Suman Chakrabarty's g
 - **Status:** *Submitted*  
 - **Keywords:** PDZ2, Allostery, MSM
 ---
+
+### 4️⃣ [Quantitative Pathway-Resolved Kinetics from Neural Network-Guided Weighted Ensemble Simulations](Quantitative_Pathway-Resolved_Kinetics_from_Neural_Network_Guided_Weighted_Ensemble_Simulations)
+- **Status:** *Submitted*  
+- **Keywords:** Weighted Ensemble, Pathway-Resolved Kinetics, Neural Networks, Path Collective Variables
+---
